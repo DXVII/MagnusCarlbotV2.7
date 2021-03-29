@@ -6,4 +6,4 @@ Dz = [1 0 0 0; 0 1 0 0; 0 0 1 d; 0 0 0 1]
 Rz = [cth -sth 0 0; sth cth 0 0; 0 0 1 0; 0 0 0 1]
 
 T = Rx*Dx*Dz*Rz
-inv(T)
+% inv(T)
