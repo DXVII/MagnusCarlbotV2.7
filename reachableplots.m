@@ -37,6 +37,7 @@ for j = minang:step:maxang
             x(index) = d2*sind(i) - a3*(cosd(i)*sind(j)*sind(-k) - cosd(i)*cosd(j)*cosd(-k)) + d3*sind(i) + d4*sind(i) + a2*cosd(i)*cosd(j);
             y(index) = a2*cosd(j)*sind(i) - d2*cosd(i) - d3*cosd(i) - d4*cosd(i) - a3*(sind(i)*sind(j)*sind(-k)-cosd(j)*cosd(-k)*sind(i));
             z(index) = d1 + a3*sind(j-k) + a2*sind(-j);
+            
             index = index + 1;
         end
     end
