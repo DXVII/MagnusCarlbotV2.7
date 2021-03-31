@@ -62,32 +62,27 @@ finalRot = simplify(final((1:3),(1:3)));
 finalTrans = simplify(final((1:3),4))
 
 %{
-Results of DH Method
 d2*sin(th1) - a3*(cos(th1)*sin(th2)*sin(th3) - cos(th1)*cos(th2)*cos(th3)) + d3*sin(th1) + d4*sin(th1) + a2*cos(th1)*cos(th2)
 a3*(sin(th1)*sin(th2)*sin(th3) - cos(th2)*cos(th3)*sin(th1)) + d2*cos(th1) + d3*cos(th1) + d4*cos(th1) - a2*cos(th2)*sin(th1)
-                                                                                    d1 + a3*sin(th2 + th3) + a2*sin(th2)-d5
-% chucked -d5 offset into calculated z equation
+                                                                                    d1 + a3*sin(th2 + th3) + a2*sin(th2) -d5
+% chucked -d5 on top of calculated eq
 %}
 
-%% Inverse - Beginning Equations
+%% Inverse
 
 eqn1 = d2*sin(th1) - a3*(cos(th1)*sin(th2)*sin(th3) - cos(th1)*cos(th2)*cos(th3)) + d3*sin(th1) + d4*sin(th1) + a2*cos(th1)*cos(th2);
 eqn2 = a3*(sin(th1)*sin(th2)*sin(th3) - cos(th2)*cos(th3)*sin(th1)) + d2*cos(th1) + d3*cos(th1) + d4*cos(th1) - a2*cos(th2)*sin(th1);
 eqn3 = d1 + a3*sin(th2 + th3) + a2*sin(th2)-d5;
 
 %% Linearise
-% Simplifying negligible lengths (arm joint offsets)
+% Simplifying negligible lengths
 fx = subs(eqn1,{d2,d3,d4},{0,0,0})
 fy = subs(eqn2,{d2,d3,d4},{0,0,0})
 fz = subs(eqn3,{d2,d3,d4},{0,0,0})
 
-% need to find valid Equilibria
+% need to find valid equilibria
 
-% valid equilibria exist where velocity = 0
-% given robotic can stop in all combinations of valid work motor angles,
-% infinitely possible equilibria points?
-
-% insert equilibrium points.
+% equilibrium points, (to be found)
 eq_th1 = pi/4;
 eq_th2 = pi/4;
 eq_th3 = pi/4;
@@ -121,39 +116,9 @@ th1 = decoupled(1)
 th2 = decoupled(2)
 th3 = decoupled(3)
 
+% solve(eq1, eq2, eq3,[th1,th2,th3])
+% [A,B] = equationsToMatrix([eqn1, eqn2, eqn3], [th1, th2, th3]);
 
-%% Plot Reachable
-theta1 = 0;
-theta2 = 0;
-theta3 = 0;
-
-%assume wrist facing vertically down
-minang = 15;
-maxang = 75;
-
-step = 5;
-val = (maxang-minang)/step;
-
-x = zeros(val*val*val);
-y = zeros(val*val*val);
-z = zeros(val*val*val);
-index = 1;
-
-d5 = 0;
-d4 = 0;
-d3 = 0;
-d2 = 0;
-
-d1 = 0.05;
-a2 = 0.6;
-a3 = 0.5;
-for i = minang:step:maxang
-    for j = minang:step:maxang
-        for k = minang:step:maxang
-            x(index) = d2*sind(i) - a3*(cosd(i)*sind(j)*sind(-k) - cosd(i)*cosd(j)*cosd(-k)) + d3*sind(i) + d4*sind(i) + a2*cosd(i)*cosd(j);
-            y(index) = a2*cosd(j)*sind(i) - d2*cosd(i) - d3*cosd(i) - d4*cosd(i) - a3*(sind(i)*sind(j)*sind(-k)-cosd(j)*cosd(-k)*sind(i));
-            z(index) = d1 + a3*sind(j-k) + a2*sind(-j);
-            index = index + 1;
-        end
-    end
-end
+% x == a2 * cos(th1) * cos(th2) - a3 * (cos(th1) * sin(th2) * sin(th3) - cos(th1) * cos(th2) * cos(th3))
+% y == a3 * (sin(th1) * sin(th2) * sin(th3) - cos(th2) * cos(th3) * sin(th1)) - a2 * cos(th2) * sin(th1)
+% z == d1 - d5 + a3 * sin(th2 + th3) + a2 * sin(th2)
