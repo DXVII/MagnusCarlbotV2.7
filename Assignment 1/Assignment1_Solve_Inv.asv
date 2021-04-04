@@ -1,0 +1,47 @@
+%% Inverse Kinematics - Chain Inverse Kinematics --> 
+% solve q1 as tanInv(y/x) --> substitute q1 into f2
+syms d1 th1 d2 th2 a2 d3 th3 a3 d4 th4 d5 th5 d6
+syms x y z
+
+%{
+    Matrix: 0 to 1
+    x = 0
+    y = 0
+    z = d1
+
+    Matrix: 0 to 2
+    x = d2 * sin(th1)
+    y = d2 * cos(th1)
+    z = d1
+
+    Matrix: 0 to 3
+    x = d2 * sin(th1) + d3 * sin(th1) + a2 * cos(th1) * cos(th2)
+    y = d2 * cos(th1) + d3 * cos(th1) - a2 * cos(th2) * sin(th1)
+    z = d1 + a2 * sin(th2)
+
+    Matrix: 0 to 4
+    x = d2 * sin(th1) - a3 * (cos(th1) * sin(th2) * sin(th3) - cos(th1) * cos(th2) * cos(th3)) + d3 * sin(th1) + d4 * sin(th1) + a2 * cos(th1) * cos(th2)
+    y = a3 * (sin(th1) * sin(th2) * sin(th3) - cos(th2) * cos(th3) * sin(th1)) + d2 * cos(th1) + d3 * cos(th1) + d4 * cos(th1) - a2 * cos(th2) * sin(th1)
+    z = d1 + a3 * sin(th2 + th3) + a2 * sin(th2)
+
+    Matrix: 0 to 5
+    x = d5 * (cos(th4) * (cos(th1) * cos(th2) * sin(th3) + cos(th1) * cos(th3) * sin(th2)) - sin(th4) * (cos(th1) * sin(th2) * sin(th3) - cos(th1) * cos(th2) * cos(th3))) - a3 * (cos(th1) * sin(th2) * sin(th3) - cos(th1) * cos(th2) * cos(th3)) + d2 * sin(th1) + d3 * sin(th1) + d4 * sin(th1) + a2 * cos(th1) * cos(th2)
+    y = d2 * cos(th1) + d3 * cos(th1) + d4 * cos(th1) - a3 * cos(th2 + th3) * sin(th1) - a2 * cos(th2) * sin(th1) - d5 * sin(th2 + th3 + th4) * sin(th1)
+    z = d1 + a3 * sin(th2 + th3) + a2 * sin(th2) - d5 * cos(th2 + th3 + th4)
+
+    Matrix: 0 to 6
+    x = 0.5000 * a3 * cos(th2 - th1 + th3) + 0.5000 * d5 * sin(th1 + th2 + th3 + th4) + 0.5000 * d6 * sin(th1 + th2 + th3 + th4) + 0.5000 * a2 * cos(th1 + th2) + d2 * sin(th1) + d3 * sin(th1) + d4 * sin(th1) + 0.5000 * d5 * sin(th2 - th1 + th3 + th4) + 0.5000 * d6 * sin(th2 - th1 + th3 + th4) + 0.5000 * a2 * cos(th1 - th2) + 0.5000 * a3 * cos(th1 + th2 + th3)
+    y = d2 * cos(th1) + d3 * cos(th1) + d4 * cos(th1) - a3 * cos(th2 + th3) * sin(th1) - a2 * cos(th2) * sin(th1) - d5 * sin(th2 + th3 + th4) * sin(th1) - d6 * sin(th2 + th3 + th4) * sin(th1)
+    z = d1 + a3 * sin(th2 + th3) + a2 * sin(th2) - d5 * cos(th2 + th3 + th4) - d6 * cos(th2 + th3 + th4)
+
+%}
+
+
+
+theta1 = atan(y/x);            % default
+
+theta2 = asin((z-d1)/a2);      % using z
+
+solve3 = solve(z == d1 + a3*sin(th2 + th3) + a2*sin(th2), th3);
+manifold3 = subs(solve,th2,theta2)
+% 

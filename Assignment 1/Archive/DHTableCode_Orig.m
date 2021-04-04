@@ -1,0 +1,64 @@
+%% Creating Rotations, Translations, Augmented Matrix
+syms x y z angle
+
+t = @(x,y,z) [x;y;z];
+%t(1,2,3)                           % test
+
+Rx =  @(angle)[1,0,0; 0, cos(angle),sin(angle); 0,-sin(angle),cos(angle)];
+Rz = @(angle) [cos(angle),sin(angle),0; -sin(angle),cos(angle),0; 0,0,1];
+% invRx =  @(angle)[1,0,0; 0, cos(angle),sin(angle); 0,-sin(angle),cos(angle)]';
+% invRz = @(angle) [cos(angle),sin(angle),0; -sin(angle),cos(angle),0; 0,0,1]';
+
+
+RxA = @(angle,x,y,z) [Rx(angle), t(x,y,z); 0, 0, 0, 1];
+RzA = @(angle,x,y,z) [Rz(angle), t(x,y,z); 0, 0, 0, 1];
+% RzA = [Rx(angle), t(x,y,z); 0 0 0 1]           % test
+
+% invRxA = @(angle,x,y,z) [invRx(angle), t(x,y,z); 0, 0, 0, 1];
+% invRzA = @(angle,x,y,z) [invRz(angle), t(x,y,z); 0, 0, 0, 1];
+
+
+%% Denavit Hartenberg
+syms a alpha d theta
+
+% T (i-1) --> i   =  Dx(a-1)*Rx(alpha-1)*Dz(d)*Rz(theta) 
+transNext = @(a, alpha, d, theta) RxA(0,a,0,0)*RxA(alpha,0,0,0)*RzA(0,0,0,d)*RzA(theta,0,0,0);
+
+% transPrev = @(a, alpha, d, theta) invRxA(0,a,0,0)*invRxA(alpha,0,0,0)*invRzA(0,0,0,d)*invRzA(theta,0,0,0);
+
+%% DH Table to Transforms
+% [a(i-1) alpha(i-1) d(i) theta(i)]
+
+syms d1 th1 d2 th2 a2 d3 th3 a3 d4 th4 d5 th5 d6 
+
+DHtable =   [0 0 d1 th1; ...
+            0 pi/2 d2 th2; ...
+            a2 0 d3 th3; ...
+            a3 0 d4 th4; ...
+            0 -pi/2 -d5 th5;
+            0 0 -d6 0];
+final = eye(4);
+for row = 1:length(DHtable)
+    
+    a = DHtable(row,1);
+    alpha = DHtable(row,2);
+    d = DHtable(row,3);
+    theta = DHtable(row,4);
+    
+    fprintf("Matrix: %d to %d",row-1,row)
+    tmpMat(1:4,1:4) = transNext(a, alpha, d, theta)
+    % matHist{row}(1:4,1:4) = tmpMat;
+    final = final*transNext(a, alpha, d, theta);
+end
+final
+% matHist(1)
+% % size(matHist)
+% for i =1:length(matHist)
+%     tmp = matHist(i)
+%     cell2mat(tmp(1:3,1:3))
+% end
+finalRot = simplify(final((1:3),(1:3)));
+finalTrans = simplify(final((1:3),4))
+
+
+%% Inverse
