@@ -1,0 +1,3 @@
+Firm woods ~ 815kg/m3
+acrylic (upper) 2700kg/m^3
+aluminium 2700kg/m^3
