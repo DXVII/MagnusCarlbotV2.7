@@ -66,7 +66,7 @@ for row = frame_start:1:frame_stop
     
     fprintf("Matrix: %d to %d",row-1,row)
     tmpMat(1:4,1:4) = transNext(a, alpha, d, theta)
-   translations(row,:) = transpose(tmpMat(1:3,4));
+    translations(row,:) = transpose(tmpMat(1:3,4));
     final = final*transNext(a, alpha, d, theta);
 end
 %Creating vectors between frames
