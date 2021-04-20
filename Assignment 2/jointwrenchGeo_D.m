@@ -75,12 +75,6 @@ R04 = R01 * R12 * R23 * R34;
 R05 = R01 * R12 * R23 * R34 * R45;
 R06 = R05;
 
-R_10 = transpose(R01)
-R_20 = transpose(R02);
-R_30 = transpose(R03);
-R_40 = transpose(R04);
-R_50 = transpose(R05);
-R_60 = R_50;
 
 %% Joint Torques - Big = 16.5 kg*cm 
 % Weight bearing motors at "shoulder", "elbow" and "wrist" (maybe).

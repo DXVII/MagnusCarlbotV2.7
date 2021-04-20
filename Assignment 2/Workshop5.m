@@ -27,7 +27,7 @@ DHtable =   [0 0 d1 th1; ...            % frame 0-1: XY shoulder swivel
             0 pi/2 d2 th2; ...          % frame 1-2: XZ bicep elevation
             a2 0 d3 th3; ...            % frame 2-3: XZ elbow descent
             a3 0 d4 th4; ...            % frame 3-4: XZ vertical wrist (constraint: point to ground)
-            a4 pi/2 d5 th5; ...          % frame 4-5: XY wrist torsional twist (constraint: point foward)
+            0 pi/2 d5 th5; ...          % frame 4-5: XY wrist torsional twist (constraint: point foward)
             0 0 d6 0];                  % frame 5-6: Wrist to Gripper distance 
 
 
@@ -81,43 +81,62 @@ fz = subs(f3,{d2,d3,d4},{0,0,0});
 thetas = {th1, th2, th3, th4, th5};
 
 % Manual Jacobian tings
-dfxdth1 = diff(fx, th1)
-dfxdth2 = diff(fx, th2)
-dfxdth3 = diff(fx, th3)
-dfxdth4 = diff(fx, th4)
-dfxdth5 = diff(fx, th5)
+dfxdth1 = simplify(diff(fx, th1))
+dfxdth2 = simplify(diff(fx, th2))
+dfxdth3 = simplify(diff(fx, th3))
+dfxdth4 = simplify(diff(fx, th4))
+dfxdth5 = simplify(diff(fx, th5))
 
-dfydth1 = diff(fy, th1)
-dfydth2 = diff(fy, th2)
-dfydth3 = diff(fy, th3)
-dfydth4 = diff(fy, th4)
-dfydth5 = diff(fy, th5)
+dfydth1 = simplify(diff(fy, th1))
+dfydth2 = simplify(diff(fy, th2))
+dfydth3 = simplify(diff(fy, th3))
+dfydth4 = simplify(diff(fy, th4))
+dfydth5 = simplify(diff(fy, th5))
 
-% Only care about this for angle rotations
-dfzdth1 = diff(fz, th1)
-dfzdth2 = diff(fz, th2)
-dfzdth3 = diff(fz, th3)
-dfzdth4 = diff(fz, th4)
-dfzdth5 = diff(fz, th5)
+dfzdth1 = simplify(diff(fz, th1))
+dfzdth2 = simplify(diff(fz, th2))
+dfzdth3 = simplify(diff(fz, th3))
+dfzdth4 = simplify(diff(fz, th4))
+dfzdth5 = simplify(diff(fz, th5))
 
 %{
-dfxdth1 = 0.5000 * a3 * sin(th2 - th1 + th3) + 0.5000 * d5 * cos(th1 + th2 + th3 + th4) + 0.5000 * d6 * cos(th1 + th2 + th3 + th4) - 0.5000 * a2 * sin(th1 + th2) - 0.5000 * d5 * cos(th2 - th1 + th3 + th4) - 0.5000 * d6 * cos(th2 - th1 + th3 + th4) - 0.5000 * a2 * sin(th1 - th2) - 0.5000 * a3 * sin(th1 + th2 + th3)
-dfxdth2 = 0.5000 * d5 * cos(th1 + th2 + th3 + th4) - 0.5000 * a3 * sin(th2 - th1 + th3) + 0.5000 * d6 * cos(th1 + th2 + th3 + th4) - 0.5000 * a2 * sin(th1 + th2) + 0.5000 * d5 * cos(th2 - th1 + th3 + th4) + 0.5000 * d6 * cos(th2 - th1 + th3 + th4) + 0.5000 * a2 * sin(th1 - th2) - 0.5000 * a3 * sin(th1 + th2 + th3)
-dfxdth3 = 0.5000 * d5 * cos(th1 + th2 + th3 + th4) - 0.5000 * a3 * sin(th2 - th1 + th3) + 0.5000 * d6 * cos(th1 + th2 + th3 + th4) + 0.5000 * d5 * cos(th2 - th1 + th3 + th4) + 0.5000 * d6 * cos(th2 - th1 + th3 + th4) - 0.5000 * a3 * sin(th1 + th2 + th3)
-dfxdth4 = 0.5000 * d5 * cos(th1 + th2 + th3 + th4) + 0.5000 * d6 * cos(th1 + th2 + th3 + th4) + 0.5000 * d5 * cos(th2 - th1 + th3 + th4) + 0.5000 * d6 * cos(th2 - th1 + th3 + th4)
+dfxdth1 = (a3*sin(th2 - th1 + th3))/2 + (d5*cos(th1 + th2 + th3 + th4))/2 + (d6*cos(th1 + th2 + th3 + th4))/2 - (a2*sin(th1 + th2))/2 - (d5*cos(th2 - th1 + th3 + th4))/2 - (d6*cos(th2 - th1 + th3 + th4))/2 - (a2*sin(th1 - th2))/2 - (a3*sin(th1 + th2 + th3))/2
+dfxdth2 = (d5*cos(th1 + th2 + th3 + th4))/2 - (a3*sin(th2 - th1 + th3))/2 + (d6*cos(th1 + th2 + th3 + th4))/2 - (a2*sin(th1 + th2))/2 + (d5*cos(th2 - th1 + th3 + th4))/2 + (d6*cos(th2 - th1 + th3 + th4))/2 + (a2*sin(th1 - th2))/2 - (a3*sin(th1 + th2 + th3))/2
+dfxdth3 = (d5*cos(th1 + th2 + th3 + th4))/2 - (a3*sin(th2 - th1 + th3))/2 + (d6*cos(th1 + th2 + th3 + th4))/2 + (d5*cos(th2 - th1 + th3 + th4))/2 + (d6*cos(th2 - th1 + th3 + th4))/2 - (a3*sin(th1 + th2 + th3))/2
+dfxdth4 = ((d5 + d6)*(cos(th1 + th2 + th3 + th4) + cos(th2 - th1 + th3 + th4)))/2
 dfxdth5 = 0
 
-dfydth1 = - a3 * cos(th2 + th3) * cos(th1) - a2 * cos(th1) * cos(th2) - d5 * sin(th2 + th3 + th4) * cos(th1) - d6 * sin(th2 + th3 + th4) * cos(th1)
-dfydth2 = a3 * sin(th2 + th3) * sin(th1) + a2 * sin(th1) * sin(th2) - d5 * cos(th2 + th3 + th4) * sin(th1) - d6 * cos(th2 + th3 + th4) * sin(th1)
-dfydth3 = a3 * sin(th2 + th3) * sin(th1) - d5 * cos(th2 + th3 + th4) * sin(th1) - d6 * cos(th2 + th3 + th4) * sin(th1)
-dfydth4 = - d5 * cos(th2 + th3 + th4) * sin(th1) - d6 * cos(th2 + th3 + th4) * sin(th1)
+dfydth1 = -cos(th1)*(a3*cos(th2 + th3) + a2*cos(th2) + d5*sin(th2 + th3 + th4) + d6*sin(th2 + th3 + th4))
+dfydth2 = sin(th1)*(a3*sin(th2 + th3) + a2*sin(th2) - d5*cos(th2 + th3 + th4) - d6*cos(th2 + th3 + th4))
+dfydth3 = -sin(th1)*(d5*cos(th2 + th3 + th4) - a3*sin(th2 + th3) + d6*cos(th2 + th3 + th4))
+dfydth4 = -cos(th2 + th3 + th4)*sin(th1)*(d5 + d6)
 dfydth5 = 0
 
 dfzdth1 = 0
-dfzdth2 = a3 * cos(th2 + th3) + a2 * cos(th2) + d5 * sin(th2 + th3 + th4) + d6 * sin(th2 + th3 + th4)
-dfzdth3 = a3 * cos(th2 + th3) + d5 * sin(th2 + th3 + th4) + d6 * sin(th2 + th3 + th4)
-dfzdth4 = d5 * sin(th2 + th3 + th4) + d6 * sin(th2 + th3 + th4)
+dfzdth2 = a3*cos(th2 + th3) + a2*cos(th2) + d5*sin(th2 + th3 + th4) + d6*sin(th2 + th3 + th4)
+dfzdth3 = a3*cos(th2 + th3) + d5*sin(th2 + th3 + th4) + d6*sin(th2 + th3 + th4)
+dfzdth4 = sin(th2 + th3 + th4)*(d5 + d6)
 dfzdth5 = 0
+
+% Partial derivative matrix
+Jv =
+[(a3*sin(th2 - th1 + th3))/2 + (d5*cos(th1 + th2 + th3 + th4))/2 + (d6*cos(th1 + th2 + th3 + th4))/2 - (a2*sin(th1 + th2))/2 - (d5*cos(th2 - th1 + th3 + th4))/2 - (d6*cos(th2 - th1 + th3 + th4))/2 - (a2*sin(th1 - th2))/2 - (a3*sin(th1 + th2 + th3))/2, (d5*cos(th1 + th2 + th3 + th4))/2 - (a3*sin(th2 - th1 + th3))/2 + (d6*cos(th1 + th2 + th3 + th4))/2 - (a2*sin(th1 + th2))/2 + (d5*cos(th2 - th1 + th3 + th4))/2 + (d6*cos(th2 - th1 + th3 + th4))/2 + (a2*sin(th1 - th2))/2 - (a3*sin(th1 + th2 + th3))/2, (d5*cos(th1 + th2 + th3 + th4))/2 - (a3*sin(th2 - th1 + th3))/2 + (d6*cos(th1 + th2 + th3 + th4))/2 + (d5*cos(th2 - th1 + th3 + th4))/2 + (d6*cos(th2 - th1 + th3 + th4))/2 - (a3*sin(th1 + th2 + th3))/2, ((d5 + d6)*(cos(th1 + th2 + th3 + th4) + cos(th2 - th1 + th3 + th4)))/2, 0]
+[                                                                                                                                                          -cos(th1)*(a3*cos(th2 + th3) + a2*cos(th2) + d5*sin(th2 + th3 + th4) + d6*sin(th2 + th3 + th4)),                                                                                                                                                            sin(th1)*(a3*sin(th2 + th3) + a2*sin(th2) - d5*cos(th2 + th3 + th4) - d6*cos(th2 + th3 + th4)),                                                                                                                         -sin(th1)*(d5*cos(th2 + th3 + th4) - a3*sin(th2 + th3) + d6*cos(th2 + th3 + th4)),                                -cos(th2 + th3 + th4)*sin(th1)*(d5 + d6), 0]
+[                                                                                                                                                                                                                                                        0,                                                                                                                                                                       a3*cos(th2 + th3) + a2*cos(th2) + d5*sin(th2 + th3 + th4) + d6*sin(th2 + th3 + th4),                                                                                                                                     a3*cos(th2 + th3) + d5*sin(th2 + th3 + th4) + d6*sin(th2 + th3 + th4),                                          sin(th2 + th3 + th4)*(d5 + d6), 0]
+
+% From "Joint Speed"
+Jv =
+[sin(th1)*(a3*cos(th2 + th3) + a2*cos(th2) + d5*sin(th2 + th3 + th4) + d6*sin(th2 + th3 + th4)),  cos(th1)*(a3*sin(th2 + th3) + a2*sin(th2) - d5*cos(th2 + th3 + th4) - d6*cos(th2 + th3 + th4)), -cos(th1)*(d5*cos(th2 + th3 + th4) - a3*sin(th2 + th3) + d6*cos(th2 + th3 + th4)), -cos(th2 + th3 + th4)*cos(th1)*(d5 + d6),                              0]
+[cos(th1)*(a3*cos(th2 + th3) + a2*cos(th2) + d5*sin(th2 + th3 + th4) + d6*sin(th2 + th3 + th4)), -sin(th1)*(a3*sin(th2 + th3) + a2*sin(th2) - d5*cos(th2 + th3 + th4) - d6*cos(th2 + th3 + th4)),  sin(th1)*(d5*cos(th2 + th3 + th4) - a3*sin(th2 + th3) + d6*cos(th2 + th3 + th4)),  cos(th2 + th3 + th4)*sin(th1)*(d5 + d6),                              0]
+[                                                                                             0,           - a3*cos(th2 + th3) - a2*cos(th2) - d5*sin(th2 + th3 + th4) - d6*sin(th2 + th3 + th4),           - a3*cos(th2 + th3) - d5*sin(th2 + th3 + th4) - d6*sin(th2 + th3 + th4),          -sin(th2 + th3 + th4)*(d5 + d6),                              0]
+
+Jw =
+[                                                                                             0,                                                                                        sin(th1),                                                                          sin(th1),                                 sin(th1),  sin(th2 + th3 + th4)*cos(th1)]
+[                                                                                             0,                                                                                        cos(th1),                                                                          cos(th1),                                 cos(th1), -sin(th2 + th3 + th4)*sin(th1)]
+[                                                                                             1,                                                                                               0,                                                                                 0,                                        0,          -cos(th2 + th3 + th4)]
+
+
+
 %}
 
 
@@ -150,7 +169,7 @@ z1_0 = [0; 0; 1];
 
 % length{from}{to}_{frame}
 r01_0 = [0;  0; d1];
-r12_1 = [0;  0; d2]
+r12_1 = [0;  0; d2];
 r23_2 = [a2; 0; d3];
 r34_3 = [a3; 0; d4];
 r45_4 = [a4; 0; d5];
