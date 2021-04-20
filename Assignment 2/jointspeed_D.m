@@ -72,11 +72,11 @@ R04 = R01 * R12 * R23 * R34;
 R05 = R01 * R12 * R23 * R34 * R45;
 R06 = R05;
 
-R_10 = inv(R01)
-R_20 = inv(R02);
-R_30 = inv(R03);
-R_40 = inv(R04);
-R_50 = inv(R05);
+R_10 = transpose(R01)
+R_20 = transpose(R02);
+R_30 = transpose(R03);
+R_40 = transpose(R04);
+R_50 = transpose(R05);
 R_60 = R_50;
 
 %% Jacobian
@@ -97,6 +97,7 @@ for i=1:frame_stop
     pos_i = positions(1:3, i);
     Jv(1:3, i) = cross(Jw_i, pos_i);
 end
+
 J = [Jv; Jw]
 
 

@@ -29,9 +29,6 @@ DHtable = [0 0 d1 th1; ... % frame 0-1: XY shoulder swivel
             0 0 d6 0]; % frame 5-6: Wrist to Gripper distance
 
 %% Generate Poses
-final = eye(4); % being DH chain
-
-f_final = length(DHtable); % code tings: simplify end of array
 
 % frame 1 to 4 chosen due to relational constrains of frames 4 and onwards (discussed in report)
 frame_start = 1; % code tings: start of transform chain
@@ -72,11 +69,11 @@ R04 = R01 * R12 * R23 * R34;
 R05 = R01 * R12 * R23 * R34 * R45;
 R06 = R05;
 
-R_10 = inv(R01)
-R_20 = inv(R02);
-R_30 = inv(R03);
-R_40 = inv(R04);
-R_50 = inv(R05);
+R_10 = transpose(R01)
+R_20 = transpose(R02);
+R_30 = transpose(R03);
+R_40 = transpose(R04);
+R_50 = transpose(R05);
 R_60 = R_50;
 
 %% Jacobian
@@ -103,11 +100,24 @@ J = [Jv; Jw];
 %% Joint wrench via transpose
 J_t = transpose(J);         % 6x6 of (Z x rAB) downward rows
 
+% create Fa
+f1 = ;
+f2 = ;
+f3 = ;
+f4 = ;
+f5 = ;
+f6 = ;
 
+% rotate to frame 0
+f1_f0 = R_10*f1;
+f2_f0 = R_20*f2;
+f3_f0 = R_30*f3;
+f4_f0 = R_40*f4;
+f5_f0 = R_50*f5;
+f6_f0 = R_60*f6;
 
-
-
-
+wrenches = [f1_f0; f2_f0; f3_f0; f4_f0; f5_f0; f6_f0]
+torques = J_t* wrenches;
 
 
 
