@@ -64,8 +64,8 @@ for row = frame_start:1:frame_stop
     d = DHtable(row,3);
     theta = DHtable(row,4);
     
-    fprintf("Matrix: %d to %d",row-1,row)
-    tmpMat(1:4,1:4) = transNext(a, alpha, d, theta)
+%     fprintf("Matrix: %d to %d",row-1,row)
+    tmpMat(1:4,1:4) = transNext(a, alpha, d, theta);
     translations(row,:) = transpose(tmpMat(1:3,4));
     final = final*transNext(a, alpha, d, theta);
 end
@@ -84,6 +84,28 @@ r46_0 = R04*r45_4' + r56_0;
 r36_0 = R03*r34_3' + r46_0;
 r26_0 = R02*r23_2' + r36_0;
 r16_0 = R01*r12_1' + r26_0;
-r06_0 = r01_0' + r26_0; %unnecessary
+% r06_0 = r01_0' + r26_0; %unnecessary
 
-Jv = [cross(r16_0,z1) cross(r26_0,z2) cross(r36_0,z3) cross(r46_0,z4) cross(r56_0,z5)];
+Jv = [cross(z1,r16_0) cross(z2,r26_0) cross(z3,r36_0) cross(z4,r46_0) cross(z5,r56_0)];
+
+%% Joint Wrench calcs
+
+r2c2_2 = r23_2/2;
+r3c3_3 = r34_3/2;
+r2c2_0 = R02*r2c2_2';
+r3c3_0 = R03*r3c3_3';
+
+zero = [0;0;0];
+syms Mm1 Mm2 Mm3 Mm4 Mm5 Mm6 Ma2 Ma3 ME Mp
+
+ Jvc1 = [cross(z1,R01*r12_1'+r2c2_0) cross(z2,r2c2_0) zero zero zero];
+ Jvc2 = [cross(z1,R01*r12_1' + R02*r23_2' + r3c3_0) cross(z2,R02*r23_2' + r3c3_0) cross(z3,r3c3_0) zero zero];
+ 
+%  Jvm1 = 
+Jvm2 = [cross(z1,R01*r12_1') zero zero zero zero];
+Jvm3 = [cross(z1,R01*r12_1'+R02*r23_2') cross(z2,R02*r23_2') zero zero zero];
+Jvm4 = [cross(z1,R01*r12_1'+R02*r23_2' + R03*r34_3') cross(z2,R02*r23_2'+R03*r34_3') cross(z3,R03*r34_3') zero zero];
+JVm5 = [cross(z1,R01*r12_1'+R02*r23_2' + R03*r34_3' + R04*r45_4') cross(z2,R02*r23_2'+R03*r34_3' + R04*r45_4') cross(z3,R03*r34_3'+R04*r45_4') cross(z4,R04*r45_4') zero];
+Jvm6 = [cross(z1,R01*r12_1'+R02*r23_2' + R03*r34_3' + R04*r45_4' + R05*r56_5') cross(z2,R02*r23_2'+R03*r34_3' + R04*r45_4' + R05*r56_5') cross(z3,R03*r34_3'+R04*r45_4'+R05*r56_5') cross(z4,R04*r45_4'+R05*r56_5') cross(z5,R05*r56_5')];
+
+JvE = transpose(Jv);
