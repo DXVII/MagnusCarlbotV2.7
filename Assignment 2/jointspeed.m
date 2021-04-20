@@ -98,14 +98,26 @@ r3c3_0 = R03*r3c3_3';
 zero = [0;0;0];
 syms Mm1 Mm2 Mm3 Mm4 Mm5 Mm6 Ma2 Ma3 ME Mp
 
- Jvc1 = [cross(z1,R01*r12_1'+r2c2_0) cross(z2,r2c2_0) zero zero zero];
- Jvc2 = [cross(z1,R01*r12_1' + R02*r23_2' + r3c3_0) cross(z2,R02*r23_2' + r3c3_0) cross(z3,r3c3_0) zero zero];
- 
+ Jvc1 = [cross(z1,R01*r12_1'+r2c2_0) cross(z2,r2c2_0) zero zero zero]';
+ Jvc2 = [cross(z1,R01*r12_1' + R02*r23_2' + r3c3_0) cross(z2,R02*r23_2' + r3c3_0) cross(z3,r3c3_0) zero zero]';
+
 %  Jvm1 = 
-Jvm2 = [cross(z1,R01*r12_1') zero zero zero zero];
-Jvm3 = [cross(z1,R01*r12_1'+R02*r23_2') cross(z2,R02*r23_2') zero zero zero];
-Jvm4 = [cross(z1,R01*r12_1'+R02*r23_2' + R03*r34_3') cross(z2,R02*r23_2'+R03*r34_3') cross(z3,R03*r34_3') zero zero];
-JVm5 = [cross(z1,R01*r12_1'+R02*r23_2' + R03*r34_3' + R04*r45_4') cross(z2,R02*r23_2'+R03*r34_3' + R04*r45_4') cross(z3,R03*r34_3'+R04*r45_4') cross(z4,R04*r45_4') zero];
-Jvm6 = [cross(z1,R01*r12_1'+R02*r23_2' + R03*r34_3' + R04*r45_4' + R05*r56_5') cross(z2,R02*r23_2'+R03*r34_3' + R04*r45_4' + R05*r56_5') cross(z3,R03*r34_3'+R04*r45_4'+R05*r56_5') cross(z4,R04*r45_4'+R05*r56_5') cross(z5,R05*r56_5')];
+Jvm2 = [cross(z1,R01*r12_1') zero zero zero zero]';
+Jvm3 = [cross(z1,R01*r12_1'+R02*r23_2') cross(z2,R02*r23_2') zero zero zero]';
+Jvm4 = [cross(z1,R01*r12_1'+R02*r23_2' + R03*r34_3') cross(z2,R02*r23_2'+R03*r34_3') cross(z3,R03*r34_3') zero zero]';
+Jvm5 = [cross(z1,R01*r12_1'+R02*r23_2' + R03*r34_3' + R04*r45_4') cross(z2,R02*r23_2'+R03*r34_3' + R04*r45_4') cross(z3,R03*r34_3'+R04*r45_4') cross(z4,R04*r45_4') zero]';
+Jvm6 = [cross(z1,R01*r12_1'+R02*r23_2' + R03*r34_3' + R04*r45_4' + R05*r56_5') cross(z2,R02*r23_2'+R03*r34_3' + R04*r45_4' + R05*r56_5') cross(z3,R03*r34_3'+R04*r45_4'+R05*r56_5') cross(z4,R04*r45_4'+R05*r56_5') cross(z5,R05*r56_5')]';
 
 JvE = transpose(Jv);
+
+FE = [0;0;-Mp];
+Fc1 = [0;0;-Ma2];
+Fc2 = [0;0;-Ma3];
+Fm1 = [0;0;-Mm1];
+Fm2 = [0;0;-Mm2];
+Fm3 = [0;0;-Mm3];
+Fm4 = [0;0;-Mm4];
+Fm5 = [0;0;-Mm5];
+Fm6 = [0;0;-Mm6];
+
+T = JvE*FE + Jvc1*Fc1 + Jvc2*Fc2 + Jvm2*Fm2 + Jvm3*Fm3 + Jvm4*Fm4 + Jvm5*Fm5 + Jvm6*Fm6
