@@ -72,52 +72,51 @@ R04 = R01 * R12 * R23 * R34;
 R05 = R01 * R12 * R23 * R34 * R45;
 R06 = R05;
 
-% R_10 = transpose(R01);
-% R_20 = transpose(R02);
-% R_30 = transpose(R03);
-% R_40 = transpose(R04);
-% R_50 = transpose(R05);
-% R_60 = R_50;
+R_10 = transpose(R01);
+R_20 = transpose(R02);
+R_30 = transpose(R03);
+R_40 = transpose(R04);
+R_50 = transpose(R05);
+R_60 = R_50;
 
 %% Jacobian
 % Get z's 
 zf = [0;0;1];
-z1_f0 = R01 * zf;
-z2_f0 = R02 * zf;
-z3_f0 = R03 * zf;
-z4_f0 = R04 * zf;
-z5_f0 = R05 * zf;
-z6_f0 = R06 * zf;
+z1_f0 = R_10 * zf;
+z2_f0 = R_20 * zf;
+z3_f0 = R_30 * zf;
+z4_f0 = R_40 * zf;
+z5_f0 = R_50 * zf;
+z6_f0 = R_60 * zf;
 
 % combine matrix z --> Jw
-Jw = [z1_f0, z2_f0, z3_f0, z4_f0, z5_f0]
-Jw = simplify(Jw);
+Jw = [z1_f0, z2_f0, z3_f0, z4_f0, z5_f0, z6_f0]
 
-r01_f0 = [0;0;0];
 r12_f1 = [0;0;d1];
 r23_f2 = [a2;0;0];
 r34_f3 = [a3;0;0];
-r45_f5 = [0;0;d5];
+r45_f4 = [d5;0;0];
 r56_f5 = [0;0;d6];
 
-% find joints speeds relative to end effector
-r56_f0 = R05*r56_f5;
-r46_f0 = R05*r45_f5 + r56_f0;
-r36_f0 = R03*r34_f3 + r46_f0;
-r26_f0 = R02*r23_f2 + r36_f0;
-r16_f0 = R01*r12_f1 + r26_f0;
-r06_f0 = [0;0;0] + r16_f0;
 
+r01_f0 = [0;0;0]; % motor attached to ground
+r02_f0 = R_10*r12_f1 + r01_f0;
+r03_f0 = R_20*r23_f2 + r02_f0;
+r04_f0 = R_30*r34_f3 + r03_f0;
+r05_f0 = R_40*r45_f4 + r04_f0;
+r06_f0 = R_50*r56_f5 + r05_f0;
 
-sumPos = [r16_f0, r26_f0, r36_f0, r46_f0, r56_f0];
+sumPos = [r01_f0, r02_f0, r03_f0, r04_f0, r05_f0, r06_f0];
 
-for i=1:5
+for i=1:frame_stop
     Jw_i = Jw(1:3, i);
-    pos_i = sumPos(1:3, i);    
+    pos_i = sumPos(1:3, i);
     Jv(1:3, i) = cross(Jw_i, pos_i);
 end
-Jv = simplify(Jv)
-J = [Jv; Jw]
+Jv
+%J = [Jv; Jw]
+
+
 
 
 function RotMat = getRotMat(num, rotations)

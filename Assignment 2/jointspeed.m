@@ -87,3 +87,4 @@ r16_0 = R01*r12_1' + r26_0;
 r06_0 = r01_0' + r26_0; %unnecessary
 
 Jv = [cross(r16_0,z1) cross(r26_0,z2) cross(r36_0,z3) cross(r46_0,z4) cross(r56_0,z5)];
+J = [Jv;Z_mat(1:5)]
