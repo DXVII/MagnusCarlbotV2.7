@@ -40,7 +40,7 @@ frame_start = 1;            % code tings: start of transform chain
 frame_stop = 5;             % code tings: end of transform chain
 
 
-for row = frame_start:1:f_final    
+for row = frame_start:1:frame_stop    
     a = DHtable(row,1);
     alpha = DHtable(row,2);
     d = DHtable(row,3);
@@ -69,9 +69,9 @@ f2 = finalTrans(2);
 f3 = finalTrans(3);
 
 % Simplifying negligible lengths --> reduce plot lag
-fx = subs(f1,{d2,d3,d4},{0,0,0});
-fy = subs(f2,{d2,d3,d4},{0,0,0});
-fz = subs(f3,{d2,d3,d4},{0,0,0});
+fx = subs(f1,{d2,d3,d4},{0,0,0})
+fy = subs(f2,{d2,d3,d4},{0,0,0})
+fz = subs(f3,{d2,d3,d4},{0,0,0})
 
 %{
     fx = 0.5000 * a3 * cos(th2 - th1 + th3) + 0.5000 * d5 * sin(th1 + th2 + th3 + th4) + 0.5000 * d6 * sin(th1 + th2 + th3 + th4) + 0.5000 * a2 * cos(th1 + th2) + 0.5000 * d5 * sin(th2 - th1 + th3 + th4) + 0.5000 * d6 * sin(th2 - th1 + th3 + th4) + 0.5000 * a2 * cos(th1 - th2) + 0.5000 * a3 * cos(th1 + th2 + th3)
@@ -79,25 +79,29 @@ fz = subs(f3,{d2,d3,d4},{0,0,0});
     fz = d1 + a3 * sin(th2 + th3) + a2 * sin(th2) - d5 * cos(th2 + th3 + th4) - d6 * cos(th2 + th3 + th4)
 %}
 thetas = {th1, th2, th3, th4, th5};
+fx0 = subs(fx, thetas, {0, 0, 0, 0, 0})
+fy0 = subs(fy, thetas, {0, 0, 0, 0, 0})
+fz0 = subs(fz, thetas, {0, 0, 0, 0, 0})
+
 
 % Manual Jacobian tings
-dfxdth1 = simplify(diff(fx, th1))
-dfxdth2 = simplify(diff(fx, th2))
-dfxdth3 = simplify(diff(fx, th3))
-dfxdth4 = simplify(diff(fx, th4))
-dfxdth5 = simplify(diff(fx, th5))
+dfxdth1 = simplify(diff(fx, th1));
+dfxdth2 = simplify(diff(fx, th2));
+dfxdth3 = simplify(diff(fx, th3));
+dfxdth4 = simplify(diff(fx, th4));
+dfxdth5 = simplify(diff(fx, th5));
 
-dfydth1 = simplify(diff(fy, th1))
-dfydth2 = simplify(diff(fy, th2))
-dfydth3 = simplify(diff(fy, th3))
-dfydth4 = simplify(diff(fy, th4))
-dfydth5 = simplify(diff(fy, th5))
+dfydth1 = simplify(diff(fy, th1));
+dfydth2 = simplify(diff(fy, th2));
+dfydth3 = simplify(diff(fy, th3));
+dfydth4 = simplify(diff(fy, th4));
+dfydth5 = simplify(diff(fy, th5));
 
-dfzdth1 = simplify(diff(fz, th1))
-dfzdth2 = simplify(diff(fz, th2))
-dfzdth3 = simplify(diff(fz, th3))
-dfzdth4 = simplify(diff(fz, th4))
-dfzdth5 = simplify(diff(fz, th5))
+dfzdth1 = simplify(diff(fz, th1));
+dfzdth2 = simplify(diff(fz, th2));
+dfzdth3 = simplify(diff(fz, th3));
+dfzdth4 = simplify(diff(fz, th4));
+dfzdth5 = simplify(diff(fz, th5));
 
 
 
@@ -122,10 +126,6 @@ dfzdth3 = a3*cos(th2 + th3) + d5*sin(th2 + th3 + th4) + d6*sin(th2 + th3 + th4)
 dfzdth4 = sin(th2 + th3 + th4)*(d5 + d6)
 dfzdth5 = 0
 
-
-
-
-
 % Partial derivative matrix
 Jv =
 [(a3*sin(th2 - th1 + th3))/2 + (d5*cos(th1 + th2 + th3 + th4))/2 + (d6*cos(th1 + th2 + th3 + th4))/2 - (a2*sin(th1 + th2))/2 - (d5*cos(th2 - th1 + th3 + th4))/2 - (d6*cos(th2 - th1 + th3 + th4))/2 - (a2*sin(th1 - th2))/2 - (a3*sin(th1 + th2 + th3))/2, (d5*cos(th1 + th2 + th3 + th4))/2 - (a3*sin(th2 - th1 + th3))/2 + (d6*cos(th1 + th2 + th3 + th4))/2 - (a2*sin(th1 + th2))/2 + (d5*cos(th2 - th1 + th3 + th4))/2 + (d6*cos(th2 - th1 + th3 + th4))/2 + (a2*sin(th1 - th2))/2 - (a3*sin(th1 + th2 + th3))/2, (d5*cos(th1 + th2 + th3 + th4))/2 - (a3*sin(th2 - th1 + th3))/2 + (d6*cos(th1 + th2 + th3 + th4))/2 + (d5*cos(th2 - th1 + th3 + th4))/2 + (d6*cos(th2 - th1 + th3 + th4))/2 - (a3*sin(th1 + th2 + th3))/2, ((d5 + d6)*(cos(th1 + th2 + th3 + th4) + cos(th2 - th1 + th3 + th4)))/2, 0]
@@ -138,12 +138,6 @@ Jv =
 [cos(th1)*(a3*cos(th2 + th3) + a2*cos(th2) + d5*sin(th2 + th3 + th4) + d6*sin(th2 + th3 + th4)), -sin(th1)*(a3*sin(th2 + th3) + a2*sin(th2) - d5*cos(th2 + th3 + th4) - d6*cos(th2 + th3 + th4)),  sin(th1)*(d5*cos(th2 + th3 + th4) - a3*sin(th2 + th3) + d6*cos(th2 + th3 + th4)),  cos(th2 + th3 + th4)*sin(th1)*(d5 + d6),                              0]
 [                                                                                             0,           - a3*cos(th2 + th3) - a2*cos(th2) - d5*sin(th2 + th3 + th4) - d6*sin(th2 + th3 + th4),           - a3*cos(th2 + th3) - d5*sin(th2 + th3 + th4) - d6*sin(th2 + th3 + th4),          -sin(th2 + th3 + th4)*(d5 + d6),                              0]
 
-
-
-
-
-
-
 Jw =
 [                                                                                             0,                                                                                        sin(th1),                                                                          sin(th1),                                 sin(th1),  sin(th2 + th3 + th4)*cos(th1)]
 [                                                                                             0,                                                                                        cos(th1),                                                                          cos(th1),                                 cos(th1), -sin(th2 + th3 + th4)*sin(th1)]
@@ -154,44 +148,44 @@ Jw =
 %}
 
 
-% J = [ ...
-%     dfxdth1, dfxdth2, dfxdth3, dfxdth4, dfxdth5; ...
-%     dfydth1, dfydth2, dfydth3, dfydth4, dfydth5; ...
-%     dfzdth1, dfzdth2, dfzdth3, dfzdth4, dfzdth5; ...
-% ];
+J = [ ...
+    dfxdth1, dfxdth2, dfxdth3, dfxdth4, dfxdth5; ...
+    dfydth1, dfydth2, dfydth3, dfydth4, dfydth5; ...
+    dfzdth1, dfzdth2, dfzdth3, dfzdth4, dfzdth5; ...
+];
 
 
-% %% Cross product Method
+%% Cross product Method
 
 
-% % R_{origin}_{destination}
-% R_01 = Rx(0) * Rz(th1);
-% R_12 = Rx(90)* Rz(th2);
-% R_23 = Rx(0) * Rz(th3);
-% R_34 = Rx(0) * Rz(th4);
-% R_45 = Rx(90)* Rz(th5);
+% R_{origin}_{destination}
+R_01 = Rx(0) * Rz(th1);
+R_12 = Rx(90)* Rz(th2);
+R_23 = Rx(0) * Rz(th3);
+R_34 = Rx(0) * Rz(th4);
+R_45 = Rx(90)* Rz(th5);
 
-% R_10 = R_01';
-% R_21 = R_12';
-% R_32 = R_23';
-% R_43 = R_34';
-% R_54 = R_45';
+R_10 = R_01';
+R_21 = R_12';
+R_32 = R_23';
+R_43 = R_34';
+R_54 = R_45';
 
 
-% % velocity{joint}_{frame}
-% z1_0 = [0; 0; 1];
+% velocity{joint}_{frame}
+z1_0 = [0; 0; 1];
 
-% % length{from}{to}_{frame}
-% r01_0 = [0;  0; d1];
-% r12_1 = [0;  0; d2];
-% r23_2 = [a2; 0; d3];
-% r34_3 = [a3; 0; d4];
-% r45_4 = [a4; 0; d5];
-% r56_5 = [0;  0; d5];
+% length{from}{to}_{frame}
+r01_0 = [0;  0; d1];
+r12_1 = [0;  0; d2];
+r23_2 = [a2; 0; d3];
+r34_3 = [a3; 0; d4];
+r45_4 = [a4; 0; d5];
+r56_5 = [0;  0; d5];
 
-% %  Note:
-% %  - As many d's as there are motors
-% %  - As many a's as we have links
-% %  - d2, d3, d4, d5 = 0
+%  Note:
+%  - As many d's as there are motors
+%  - As many a's as we have links
+%  - d2, d3, d4, d5 = 0
 
 
