@@ -4,7 +4,7 @@ close all
 R_0_i = eye(3,3);
 
 R_0_f = [0 -1 0; 1 0 0; 0 0 1];
-R_0_f = eul2r(0.65, 0.36, -1.45);
+R_0_f = eul2rotm(0.65, 0.36, -1.45);
 
 % Plot
 figure(); subplot(2,1,1); hold on;
