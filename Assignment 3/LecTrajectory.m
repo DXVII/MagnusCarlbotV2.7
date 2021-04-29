@@ -4,7 +4,7 @@ close all
 R_0_i = eye(3,3);
 
 R_0_f = [0 -1 0; 1 0 0; 0 0 1];
-R_0_f = eul2rotm(0.65, 0.36, -1.45);
+R_0_f = eul2r(0.65, 0.36, -1.45);
 
 % Plot
 figure(); subplot(2,1,1); hold on;
@@ -25,12 +25,13 @@ R_i_f = R_0_i' * R_0_f;             % Eq (4)
 
 % Plot it (in the middle for clarity)
 
-P1 = [4;0;0]/2;
+P1 = [4;0; 0]/2;
 P2 = P1+k';
-h = plot_arrow(p1, p2);
+h = plot_arrow(P1, P2);
 t = text(P2(1), P2(2), P2(3), ['k (\theta from 0 to ' num2str(theta_f, '%.2f') ')' ]); % t.Iterpreter = ..?
 % axis auto
 pause;
+
 
 %% Cubic Polynomial - My Parameter Theta interpolated
 t_f = 5; % 5 seconds movement
@@ -45,7 +46,7 @@ text(t_f/2+0.1,theta_f/2,'\theta(t)=1_0 + 1_1t + 1_2t^2 + a_3t^3');
 title('/theta interpolation (here cubic) over trajectory time. k remains constant');
 ylabel('\theta (t)');
 xlabel('t (in s)');
-pause;
+pause;  
 
 %% For each intant, get rotation matrix:
 
