@@ -21,8 +21,11 @@ PATHS = 3;
 resolution = 100;
 time = linspace(0,time_limit,resolution);
 
-t1 = resolution/3;
-t2 = 2*resolution / 3;
+t1 = fix(resolution/3)+1;
+t2 = fix(2*resolution/3)+1;
+
+timetrans = [time(1), time(t1),time(t2),time(resolution)]
+
 x_vals = zeros(1, resolution);
 y_vals = zeros(1, resolution);
 z_vals = zeros(1, resolution);
@@ -61,6 +64,8 @@ plot(time, x_vals)
 title("x over time")
 xlabel("time")
 ylabel("x coord")
+grid on
+axis padded
 
 subplot(2,3,2)
 plot(time, y_vals)
