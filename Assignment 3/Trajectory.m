@@ -10,10 +10,10 @@ height = 5;
 
 
 % Finding coefficients
-[x_coeffs, y_coeffs, z_coeffs] = findCoeffs(time_limit, startCoord, endCoord, height);
-x_polys = polyfuncs(x_coeffs);
-y_polys = polyfuncs(y_coeffs);
-z_polys = polyfuncs(z_coeffs);
+[x_coeffs, y_coeffs, z_coeffs] = findCoeffs(time_limit, startCoord, endCoord, height)
+x_polys = polyfuncs(x_coeffs)
+y_polys = polyfuncs(y_coeffs)
+z_polys = polyfuncs(z_coeffs)
 
 
 % Generating plotting vectors
@@ -48,12 +48,14 @@ for i=1:resolution
     else
         f_choice(i) = 4;
     end
-
+    
     x_vals(i) = subs(fx, t, time(i));
     y_vals(i) = subs(fy, t, time(i));
     z_vals(i) = subs(fz, t, time(i));
     
 end
+% f_choice
+
 subplot(2,3,1)
 plot(time, x_vals)
 title("x over time")
@@ -170,21 +172,10 @@ function abc_coeffs = traj_3part(t_lim, points, velos)
 end
 
 function sols = traj_seg(t_i, t_f, p_i, p_f, v_i, v_f)
-% function [m0, m1, m2, m3] = traj_seg(t_i, t_f, p_i, p_f, v_i, v_f)
-    % syms t_i t_f
-    % syms p_i p_f 
-    % syms v_i v_f
-    % syms secdiv
-
     syms t
     syms m0 m1 m2 m3 
-    traj = m0 + m1*t + m2*t.^2 + m3*t.^3;
-    velo = m1 + m2*t + m3*t.^2;
-
-
-    % t_i = 0;         % for now
-    % secdiv = 3;
-    % tf = 5/secdiv;  % 
+    traj = m0 + m1*t + m2*t^2 + m3*t^3;
+    velo = m1 + m2*t + m3*t^2;
 
     f1 = p_i == subs(traj, t, t_i);
     f2 = p_f == subs(traj, t, t_f);
