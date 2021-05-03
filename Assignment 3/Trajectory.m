@@ -65,28 +65,41 @@ plot(time, y_vals)
 title("y over time")
 xlabel("time")
 ylabel("y coord")
+grid on
+axis padded
 
 figure(3)
 plot(time, z_vals)
 title("z over time")
 xlabel("time")
 ylabel("z coord")
+grid on
+axis padded
 
 figure(4)
 plot(x_vals, y_vals)
 title("top down view")
 xlabel("x coord")
 ylabel("y coord")
+grid on
+axis padded
 
 figure(5)
 plot(x_vals, z_vals)
 title("side (x) view")
 xlabel("x coord")
 ylabel("z coord")
+grid on
+axis padded
 
-
-
-% plot3(x_vals, y_vals, z_vals)
+figure(6)
+plot3(x_vals, y_vals, z_vals)
+title("3D plot")
+xlabel("x coord")
+ylabel("y coord")
+zlabel("z coord")
+grid on
+axis padded
 
 function polyMat = polyfuncs(a_coeffs)
     syms t
