@@ -4,9 +4,9 @@
 
 % Parameters for plotting trajectory
 time_limit = 5;
-startCoord = [0, 0, 0];
-endCoord = [2, 2, 0];
-height = 10;
+startCoord = [5, 5, 5];
+endCoord = [10, 10, 5];
+height = 5;
 
 
 % Finding coefficients
@@ -20,9 +20,9 @@ z_polys = polyfuncs(z_coeffs);
 PATHS = 3;
 resolution = 100;
 time = linspace(0,time_limit,resolution);
+
 t1 = resolution/3;
 t2 = 2*resolution / 3;
-
 x_vals = zeros(1, resolution);
 y_vals = zeros(1, resolution);
 z_vals = zeros(1, resolution);
@@ -54,13 +54,13 @@ for i=1:resolution
     z_vals(i) = subs(fz, t, time(i));
     
 end
-figure(1)
+subplot(2,3,1)
 plot(time, x_vals)
 title("x over time")
 xlabel("time")
 ylabel("x coord")
 
-figure(2)
+subplot(2,3,2)
 plot(time, y_vals)
 title("y over time")
 xlabel("time")
@@ -68,7 +68,7 @@ ylabel("y coord")
 grid on
 axis padded
 
-figure(3)
+subplot(2,3,3)
 plot(time, z_vals)
 title("z over time")
 xlabel("time")
@@ -76,7 +76,7 @@ ylabel("z coord")
 grid on
 axis padded
 
-figure(4)
+subplot(2,3,4)
 plot(x_vals, y_vals)
 title("top down view")
 xlabel("x coord")
@@ -84,7 +84,7 @@ ylabel("y coord")
 grid on
 axis padded
 
-figure(5)
+subplot(2,3,5)
 plot(x_vals, z_vals)
 title("side (x) view")
 xlabel("x coord")
@@ -92,7 +92,7 @@ ylabel("z coord")
 grid on
 axis padded
 
-figure(6)
+subplot(2,3,6)
 plot3(x_vals, y_vals, z_vals)
 title("3D plot")
 xlabel("x coord")
@@ -104,6 +104,8 @@ axis padded
 function polyMat = polyfuncs(a_coeffs)
     syms t
     tmp = flip(a_coeffs);
+    % coefficients for poly2sym are in order [a0,a1,a2,a3]
+    % poly2sym turns vector of coefficients into a polynomcal
     for i = 1:size(tmp,2)
         polyMat(i,1) = poly2sym(transpose(tmp(:,i)),t);
     end
@@ -119,11 +121,11 @@ function [x_coeffs, y_coeffs, z_coeffs] = findCoeffs(time_limit, startCoord, end
     z_f = endCoord(3);
 
     % time_limit = 5;
-    x_points = [x_i, x_i, x_f, x_f];
-    y_points = [y_i, y_i, y_f, y_f];
+    x_points = [x_i, x_i, x_f, x_f]
+    y_points = [y_i, y_i, y_f, y_f]
 
     % height = 10;
-    z_points = [z_i, z_i + height, z_f + height, z_f];
+    z_points = [z_i, z_i + height, z_f + height, z_f]
 
     % intermediary points are set to 0
     zeroVel = zeros(1,4);
