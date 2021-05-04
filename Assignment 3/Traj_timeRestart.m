@@ -21,8 +21,8 @@ PATHS = 3;
 resolution = 100;
 time = linspace(0,time_limit,resolution);
 
-t_seg1 = fix(resolution/3)+1;
-t_seg2 = fix(2*resolution/3)+1;
+t_seg1 = fix(resolution/3);
+t_seg2 = fix(2*resolution/3);
 
 
 % x_vals = zeros(1, resolution);
@@ -38,14 +38,14 @@ for i=1:t_seg1
     n=n+1;    
 end
 n=1;
-for i = t_seg1+1:t_seg2
+for i = 1:t_seg1
     fx2(n) = subs(x_polys(2), t, time(i));
     fy2(n) = subs(y_polys(2), t, time(i));
     fz2(n) = subs(z_polys(2), t, time(i));
     n=n+1;    
 end
 n=1;
-for i = t_seg2+1:resolution
+for i = 1:resolution-(2*t_seg1)
     fx3(n) = subs(x_polys(3), t, time(i));
     fy3(n) = subs(y_polys(3), t, time(i));
     fz3(n) = subs(z_polys(3), t, time(i));
