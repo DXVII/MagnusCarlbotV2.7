@@ -180,7 +180,7 @@ function sols = traj_seg(t_i, t_f, p_i, p_f, v_i, v_f)
     syms t
     syms m0 m1 m2 m3 
     traj = m0 + m1*t + m2*t^2 + m3*t^3;
-    velo = m1 + m2*t + m3*t^2;
+    velo = m1 + 2*m2*t + 3*m3*t^2;
 
     f1 = p_i == subs(traj, t, t_i);
     f2 = p_f == subs(traj, t, t_f);

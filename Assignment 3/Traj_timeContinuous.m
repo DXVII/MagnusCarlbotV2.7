@@ -1,19 +1,19 @@
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% ---------------------------------------------------------------------------------------------------
 %% -- Traj -------------------------------------------------------------------------------------------
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% ---------------------------------------------------------------------------------------------------
 
 % Parameters for plotting trajectory
 time_limit = 5;
-startCoord = [0.1188, 0.1188, ];
-endCoord = [0.2687, 10, 5];
+startCoord = [5, 5, 5];
+endCoord = [10, 10, 5];
 height = 5;
 
 
 % Finding coefficients
 [x_coeffs, y_coeffs, z_coeffs] = findCoeffs(time_limit, startCoord, endCoord, height)
-x_polys = polyfuncs(x_coeffs)
-y_polys = polyfuncs(y_coeffs)
-z_polys = polyfuncs(z_coeffs)
+x_polys = polyfuncs(x_coeffs);
+y_polys = polyfuncs(y_coeffs);
+z_polys = polyfuncs(z_coeffs);
 
 
 % Generating plotting vectors
@@ -21,43 +21,42 @@ PATHS = 3;
 resolution = 100;
 time = linspace(0,time_limit,resolution);
 
-t_seg1 = fix(resolution/3)+1;
-t_seg2 = fix(2*resolution/3)+1;
+t1 = fix(resolution/3)+1;
+t2 = fix(2*resolution/3)+1;
+
+timetrans = [time(1), time(t1),time(t2),time(resolution)]
 
 
-% x_vals = zeros(1, resolution);
-% y_vals = zeros(1, resolution);
-% z_vals = zeros(1, resolution);
-
+x_vals = zeros(1, resolution);
+y_vals = zeros(1, resolution);
+z_vals = zeros(1, resolution);
+f_choice = zeros(1, resolution);
 syms t
-n=1;
-for i=1:t_seg1
-    fx1(n) = subs(x_polys(1), t, time(i));
-    fy1(n) = subs(y_polys(1), t, time(i));
-    fz1(n) = subs(z_polys(1), t, time(i));
-    n=n+1;    
-end
-n=1;
-for i = t_seg1+1:t_seg2
-    fx2(n) = subs(x_polys(2), t, time(i));
-    fy2(n) = subs(y_polys(2), t, time(i));
-    fz2(n) = subs(z_polys(2), t, time(i));
-    n=n+1;    
-end
-n=1;
-for i = t_seg2+1:resolution
-    fx3(n) = subs(x_polys(3), t, time(i));
-    fy3(n) = subs(y_polys(3), t, time(i));
-    fz3(n) = subs(z_polys(3), t, time(i));
-    n=n+1;    
-end
-
-
-x_vals = [fx1, fx2, fx3];
-y_vals = [fy1, fy2, fy3];
-z_vals = [fz1, fz2, fz3];
+for i=1:resolution
+    if (i<=t1)
+        fx = x_polys(1);
+        fy = y_polys(1);
+        fz = z_polys(1);
+        f_choice(i) = 1;
+    elseif (i > t1 && i<=t2)
+        fx = x_polys(2);
+        fy = y_polys(2);
+        fz = z_polys(2);
+        f_choice(i) = 2;
+    elseif (i>t2)
+        fx = x_polys(3);
+        fy = y_polys(3);
+        fz = z_polys(3);
+        f_choice(i) = 3;
+    else
+        f_choice(i) = 4;
+    end
     
-
+    x_vals(i) = subs(fx, t, time(i));
+    y_vals(i) = subs(fy, t, time(i));
+    z_vals(i) = subs(fz, t, time(i));
+    
+end
 % f_choice
 
 subplot(2,3,1)
@@ -109,15 +108,7 @@ zlabel("z coord")
 grid on
 axis padded
 
-function polyMat = polyfuncs(a_coeffs)
-    syms t
-    tmp = flip(a_coeffs);
-    % coefficients for poly2sym are in order [a0,a1,a2,a3]
-    % poly2sym turns vector of coefficients into a polynomcal
-    for i = 1:size(tmp,2)
-        polyMat(i,1) = poly2sym(transpose(tmp(:,i)),t);
-    end
-end
+
 
 function [x_coeffs, y_coeffs, z_coeffs] = findCoeffs(time_limit, startCoord, endCoord, height)
     x_i = startCoord(1); 
@@ -127,10 +118,16 @@ function [x_coeffs, y_coeffs, z_coeffs] = findCoeffs(time_limit, startCoord, end
     x_f = endCoord(1);
     y_f = endCoord(2);
     z_f = endCoord(3);
+    
+%     trapx = 0.2*(x_f-x_i);
+%     trapy = 0.2*(y_f-y_i);
+    
+    trapx = 0;
+    trapy = 0;
 
     % time_limit = 5;
-    x_points = [x_i, x_i, x_f, x_f]
-    y_points = [y_i, y_i, y_f, y_f]
+    x_points = [x_i, x_i+trapx, x_f-trapx, x_f]
+    y_points = [y_i, y_i+trapy, y_f-trapy, y_f]
 
     % height = 10;
     z_points = [z_i, z_i + height, z_f + height, z_f]
@@ -159,6 +156,9 @@ function abc_coeffs = traj_3part(t_lim, points, velos)
 
     t0 = 0;
     t1 = t_lim / 3;
+    t2 = 2*t_lim / 3;
+    t3 = t_lim;
+    
     
     % p1 = 0; p2 = 0; p3 = 3; p4 = 3;
     % v1 = 0; v2 = 0; v3 = 0; v4 = 0;
@@ -166,8 +166,8 @@ function abc_coeffs = traj_3part(t_lim, points, velos)
     % traj_seg(t_i, t_f, p_i, p_f, v_i, v_f)
     
     AB = traj_seg(t0, t1, p1, p2, v1, v2);
-    BC = traj_seg(t0, t1, p2, p3, v2, v3);
-    CD = traj_seg(t0, t1, p3, p4, v3, v4);
+    BC = traj_seg(t1, t2, p2, p3, v2, v3);
+    CD = traj_seg(t2, t3, p3, p4, v3, v4);
     
     % AB = [AB0; AB1; AB2; AB3] = traj_seg(t0, t1, p1, p2, v1, v2);
     % BC = [BC0; BC1; BC2; BC3] = traj_seg(t1, t2, p2, p3, v2, v3);
@@ -181,15 +181,15 @@ function sols = traj_seg(t_i, t_f, p_i, p_f, v_i, v_f)
     traj = m0 + m1*t + m2*t^2 + m3*t^3;
     velo = m1 + 2*m2*t + 3*m3*t^2;
 
-    f1 = p_i == subs(traj, t, t_i)
-    f2 = p_f == subs(traj, t, t_f)
-    f3 = v_i == subs(velo, t, t_i)
-    f4 = v_f == subs(velo, t, t_f)
+    f1 = p_i == subs(traj, t, t_i);
+    f2 = p_f == subs(traj, t, t_f);
+    f3 = v_i == subs(velo, t, t_i);
+    f4 = v_f == subs(velo, t, t_f);
 
     eqns = [f1, f2, f3, f4];
     coefvars = [m0, m1, m2, m3];
     [A, b] = equationsToMatrix(eqns, coefvars);
-    sols = linsolve(A , b);
+    sols = A * b;
 
     % m0 = sols(1); 
     % m1 = sols(2); 
@@ -197,6 +197,16 @@ function sols = traj_seg(t_i, t_f, p_i, p_f, v_i, v_f)
     % m3 = sols(4);
 end
 
+function polyMat = polyfuncs(a_coeffs)
+    syms t
+    tmp = flip(a_coeffs);
+    
+    % coefficients for poly2sym are in order [a0,a1,a2,a3]
+    % poly2sym turns vector of coefficients into a polynomcal
+    for i = 1:size(tmp,2)
+        polyMat(i,1) = poly2sym(transpose(tmp(:,i)),t);
+    end
+end
 
 % TODO:
 % (tick) define XB and XC as a vert height about XA (xi) and XD (xf) by height

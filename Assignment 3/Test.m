@@ -3,10 +3,13 @@
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Parameters for plotting trajectory
-time_limit = 5;
-startCoord = [0.1188, 0.1188, ];
-endCoord = [0.2687, 10, 5];
-height = 5;
+time_limit = 9;
+% startCoord = [0.1188,-0.1313, 0.016];
+% endCoord = [0.2687, -0.1313, 0.016];
+startCoord = [0.1188,-0.1313, 0.2];
+endCoord = [0.2687, -0.1313, 0.2];
+
+height = 0.15;
 
 
 % Finding coefficients
@@ -165,9 +168,9 @@ function abc_coeffs = traj_3part(t_lim, points, velos)
 
     % traj_seg(t_i, t_f, p_i, p_f, v_i, v_f)
     
-    AB = traj_seg(t0, t1, p1, p2, v1, v2);
-    BC = traj_seg(t0, t1, p2, p3, v2, v3);
-    CD = traj_seg(t0, t1, p3, p4, v3, v4);
+    AB = traj_seg_A(t0, t1, p1, p2, v1, v2);
+    BC = traj_seg_B(t0, t1, p2, p3, v2, v3);
+    CD = traj_seg_C(t0, t1, p3, p4, v3, v4);
     
     % AB = [AB0; AB1; AB2; AB3] = traj_seg(t0, t1, p1, p2, v1, v2);
     % BC = [BC0; BC1; BC2; BC3] = traj_seg(t1, t2, p2, p3, v2, v3);
@@ -175,19 +178,19 @@ function abc_coeffs = traj_3part(t_lim, points, velos)
     abc_coeffs = [AB, BC, CD];
 end
 
-function sols = traj_seg(t_i, t_f, p_i, p_f, v_i, v_f)
+function sols = traj_seg_C(t_i, t_f, p_i, p_f, v_i, v_f)
     syms t
-    syms m0 m1 m2 m3 
-    traj = m0 + m1*t + m2*t^2 + m3*t^3;
-    velo = m1 + 2*m2*t + 3*m3*t^2;
+    syms c0 c1 c2 c3 
+    traj = c0 + c1*t + c2*t^2 + c3*t^3;
+    velo = c1 + 2*c2*t + 3*c3*t^2;
 
-    f1 = p_i == subs(traj, t, t_i)
-    f2 = p_f == subs(traj, t, t_f)
-    f3 = v_i == subs(velo, t, t_i)
-    f4 = v_f == subs(velo, t, t_f)
+    f1 = p_i == subs(traj, t, t_i);
+    f2 = p_f == subs(traj, t, t_f);
+    f3 = v_i == subs(velo, t, t_i);
+    f4 = v_f == subs(velo, t, t_f);
 
     eqns = [f1, f2, f3, f4];
-    coefvars = [m0, m1, m2, m3];
+    coefvars = [c0, c1, c2, c3];
     [A, b] = equationsToMatrix(eqns, coefvars);
     sols = linsolve(A , b);
 
@@ -197,6 +200,49 @@ function sols = traj_seg(t_i, t_f, p_i, p_f, v_i, v_f)
     % m3 = sols(4);
 end
 
+function sols = traj_seg_A(t_i, t_f, p_i, p_f, v_i, v_f)
+    syms t
+    syms a0 a1 a2 a3
+    traj = a0 + a1 * t + a2 * t^2 + a3 * t^3;
+    velo = a1 + 2 * a2 * t + 3 * a3 * t^2;
+
+    f1 = p_i == subs(traj, t, t_i);
+    f2 = p_f == subs(traj, t, t_f);
+    f3 = v_i == subs(velo, t, t_i);
+    f4 = v_f == subs(velo, t, t_f);
+
+    eqns = [f1, f2, f3, f4];
+    coefvars = [a0, a1, a2, a3];
+    [A, b] = equationsToMatrix(eqns, coefvars);
+    sols = linsolve(A, b);
+
+    % m0 = sols(1);
+    % m1 = sols(2);
+    % m2 = sols(3);
+    % m3 = sols(4);
+end
+
+function sols = traj_seg_B(t_i, t_f, p_i, p_f, v_i, v_f)
+    syms t
+    syms b0 b1 b2 b3
+    traj = b0 + b1 * t + b2 * t^2 + b3 * t^3;
+    velo = b1 + 2 * b2 * t + 3 * b3 * t^2;
+
+    f1 = p_i == subs(traj, t, t_i);
+    f2 = p_f == subs(traj, t, t_f);
+    f3 = v_i == subs(velo, t, t_i);
+    f4 = v_f == subs(velo, t, t_f);
+
+    eqns = [f1, f2, f3, f4];
+    coefvars = [b0, b1, b2, b3];
+    [A, b] = equationsToMatrix(eqns, coefvars);
+    sols = linsolve(A, b);
+
+    % m0 = sols(1);
+    % m1 = sols(2);
+    % m2 = sols(3);
+    % m3 = sols(4);
+end
 
 % TODO:
 % (tick) define XB and XC as a vert height about XA (xi) and XD (xf) by height
