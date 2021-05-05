@@ -33,7 +33,7 @@ theta = [Q1 Q2 Q3 Q4 Q5 0]
 TM = fk(a, alpha, d, theta);
 
 %% Trajectory Generation
-syms x_i xd_i x_f xd_f y_i yd_i y_f yd_f z_i zd_i z_f zd_f t_tr % Translation
+syms x_i xd_i x_f xd_f y_i yd_i y_f yd_f z_i zd_i z_f zd_f t_tr         % Translation
 syms w_i w_f t_rot
 
 % Constants
@@ -435,6 +435,7 @@ a2 = coeff(3);
 a3 = coeff(4);
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Rotation Trajectory
 % Input: reference orientation, effector orientation, both in frame 0 rotM
 % Output: rotM to reference orientation in frame 0

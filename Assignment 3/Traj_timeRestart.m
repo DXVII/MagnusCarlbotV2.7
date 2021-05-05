@@ -11,9 +11,9 @@ height = 0.15;
 
 % Finding coefficients
 [x_coeffs, y_coeffs, z_coeffs] = findCoeffs(time_limit, startCoord, endCoord, height)
-x_polys = polyfuncs(x_coeffs)
-y_polys = polyfuncs(y_coeffs)
-z_polys = polyfuncs(z_coeffs)
+x_polys = polyfuncs(x_coeffs);
+y_polys = polyfuncs(y_coeffs);
+z_polys = polyfuncs(z_coeffs);
 
 
 % Generating plotting vectors
@@ -136,7 +136,8 @@ function [x_coeffs, y_coeffs, z_coeffs] = findCoeffs(time_limit, startCoord, end
     z_points = [z_i, z_i + height, z_f + height, z_f]
 
     % intermediary points are set to 0
-    zeroVel = zeros(1,4);
+    % zeroVel = zeros(1,4);
+    zeroVel = [0,0.001,0.001,0];
 
     x_coeffs = traj_3part(time_limit, x_points, zeroVel);
     y_coeffs = traj_3part(time_limit, y_points, zeroVel);
@@ -198,7 +199,4 @@ function sols = traj_seg(t_i, t_f, p_i, p_f, v_i, v_f)
 end
 
 
-% TODO:
-% (tick) define XB and XC as a vert height about XA (xi) and XD (xf) by height
-% () generate VB and VC terms
-% %}
+
