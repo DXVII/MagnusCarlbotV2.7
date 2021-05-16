@@ -1,5 +1,5 @@
 
-% sendJointPos.m
+% setControlMode.m
 % --------------------------
 % Licenting Information: You are free to use or extend this project
 % for educational purposes provided that (1) you do not distribute or
@@ -14,29 +14,22 @@
 % (nathan.batham@unimelb.edu.au)
 
 
-function sendJointPos(s, jointPos, numMotors)
+function setControlMode(s, mode)
     
-    % Send joint velocities to Arduino over serial. This is done by
-    % first converting the floats to a string and then adding a
-    % terminating non-numeric string character.
+    % Send command to Arduino to change EPROM of all motors to be in
+    % either position mode or velocity mode (also known as 'wheel mode').
     
     % External Variables
     % @ s                   - Serial object.
-    % @ jointVel            - Vector of joint velocites to be sent
-    %                   to each motor in rad/s.
+    % @ mode                - A string containing the mode to change 
+    %                   the EPROM to. Accepted commands are "pos",
+    %                   "position", "vel" & "velocity".
     
-    
-    % Send drive motor command
-    fprintf(s, '%s', 'pos\n');
-    fprintf(s, '%s', 'pos\n');
+    if (mode == "position") || (mode == "pos")
+        fprintf(s, '%s', 'cnp\n');
+    elseif (mode == "velocity") || (mode == "vel")
+        fprintf(s, '%s', 'cnv\n');
+    end
 
-    % Send joint velocities individually
-    for i=1:numMotors
-        fprintf(s, '%s', num2str(jointPos(i), '%.5f') + "e");
-    end
-    
-    % wait for arduino ack
-    while ( fread(s, 1, 'uchar') ~= 'd' ) 
-    end
 
 end

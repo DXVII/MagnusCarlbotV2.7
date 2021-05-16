@@ -1,0 +1,18 @@
+kingSet = [0,0;
+0,1;
+0,-1;
+1,0;
+1,1;
+1,-1;
+-1,0;
+-1,1;
+-1,-1]
+
+knightMoves = [currX - 1, currY - 2;
+currX - 1, currY + 2;
+currX - 2, currY - 1;
+currX - 2, currY + 1;
+currX + 1, currY - 2;
+currX + 1, currY + 2;
+currX + 2, currY - 1;
+currX + 2, currY + 1]

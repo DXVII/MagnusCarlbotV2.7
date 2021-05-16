@@ -134,8 +134,8 @@ grid on
 function [L1_start_out, L1_end_out, L2_start_out, L2_end_out, EE_start_out, EE_end_out] = generate_linkPoints(th1_in, th2_in, th3_in, d1_in, a2_in, a3_in, dE_in)
     syms th1 th2 th3 d1 a2 a3 dE
 
-    x_start =0;
-    y_start =0;
+    x_start = 0;
+    y_start = 0;
     L1_start = [x_start; y_start; d1];
     L1_end = [a2 * cosd(th1) * cosd(th2); -a2 * cosd(th2) * sind(th1); a2 * sind(th2) + d1];
 
