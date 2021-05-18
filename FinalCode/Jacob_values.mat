@@ -1,0 +1,99 @@
+c1 = cos(th1);
+c2 = cos(th2);
+c3 = cos(th3);
+c4 = cos(th4);
+c5 = cos(th5);
+c6 = cos(th6);
+
+s1 = sin(th1);
+s2 = sin(th2);
+s3 = sin(th3);
+s4 = sin(th4);
+s5 = sin(th5);
+s6 = sin(th6);
+
+s23 = sin(th2+th3);
+c23 = cos(th2+th3);
+s234 = sin(th2+th3+th4);
+c234 = cos(th2+th3+th4);
+
+d_56 = d5+d6;
+
+
+
+c1r1 = d5*(c4*(s1*s23)+s4*(s1*c23))+a3*(s1*c23) + d6*(c4*(s1*s23)+s4*(s1*c23)) - (d2+d3+d4)*c1 + a2*s1*c1;
+c2r1 = -c1*(a2*s2-c234*(d_56)+a3*s23);
+c3r1 = c1*((d_56)*c234) - a3*s23;
+c4r1 = c1*((d_56)*c234);
+c5r1 = 0;
+
+c1r2 = s1*(d2+d3+d4) +a3*c1*c23 + (d_56)*c1*s234 + a1*c1*c2;
+c2r2 = -s1*s2*a2 - (d_56)*c234*s1 + a3*s23;
+c3r2 = s1*(d_56)*c234 -a3*s23;
+c4r2 = s1*(d_56)*c234;
+c5r2 = 0;
+
+c1r3 = 0;
+c2r3 = a3*c23 + d_56*s234 + a2*c2;
+c3r3 = a3*c23 + d_56*s234;
+c4r3 = d_56*s234;
+c5r3 = 0;
+
+c1r4 = 0;
+c2r4 = s1;
+c3r4 = s1;
+c4r4 = s1;
+c5r4 = c1*s234;
+
+c1r5 = 0;
+c2r5 = -c1;
+c3r5 = -c1;
+c4r5 = -c1;
+c5r5 = -s1*s234;
+
+c1r6 = 1;
+c2r6 = 0;
+c3r6 = 0;
+c4r6 = 0;
+c5r6 = -c234;
+
+c1r1 = r1c1
+c2r1 = r1c2
+c3r1 = r1c3
+c4r1 = r1c4
+c5r1 = r1c5
+c1r2 = r2c1
+c2r2 = r2c2
+c3r2 = r2c3
+c4r2 = r2c4
+c5r2 = r2c5
+c1r3 = r3c1
+c2r3 = r3c2
+c3r3 = r3c3
+c4r3 = r3c4
+c5r3 = r3c5
+c1r4 = r4c1
+c2r4 = r4c2
+c3r4 = r4c3
+c4r4 = r4c4
+c5r4 = r4c5
+c1r5 = r5c1
+c2r5 = r5c2
+c3r5 = r5c3
+c4r5 = r5c4
+c5r5 = r5c5
+c1r6 = r6c1
+c2r6 = r6c2
+c3r6 = r6c3
+c4r6 = r6c4
+c5r6 = r6c5
+
+
+Je = [
+    r1c1, r1c2, r1c3, r1c4, r1c5;
+    r2c1, r2c2, r2c3, r2c4, r2c5;
+    r3c1, r3c3, r3c3, r3c4, r3c5;
+    r4c1, r4c4, r4c4, r4c4, r4c5;
+    r5c1, r5c4, r5c4, r5c4, r5c5;
+    r6c1, r6c4, r6c4, r6c4, r6c5;
+]
